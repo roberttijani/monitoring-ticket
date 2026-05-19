@@ -5,7 +5,7 @@ import "./globals.css";
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Ticket Monitoring System",
+  title: "Ticket Sales Dashboard",
   description: "Advanced real-time ticketing dashboard for Admins and Staff.",
 };
 
