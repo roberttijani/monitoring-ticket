@@ -4,6 +4,7 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useEventStore, TicketType } from "@/store/eventStore";
 import { useAuthStore } from "@/store/authStore";
+import { subscribeToTicketChanges } from "@/lib/supabase/realtime";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +31,12 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
     if (events.length === 0) fetchEvents();
     if (users.length === 0) fetchUsers();
   }, [events.length, users.length, fetchEvents, fetchUsers]);
+
+  // Realtime subscription untuk update otomatis saat webhook Mayar masuk
+  useEffect(() => {
+    const unsubscribe = subscribeToTicketChanges();
+    return () => unsubscribe();
+  }, []);
 
   const event = events.find(e => e.id === eventId);
 

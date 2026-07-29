@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useEventStore } from "@/store/eventStore";
+import { subscribeToTicketChanges } from "@/lib/supabase/realtime";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Ticket, Calendar, Users } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
@@ -12,6 +13,12 @@ export default function AdminDashboard() {
     useEffect(() => {
         fetchEvents();
     }, [fetchEvents]);
+
+    // Realtime subscription untuk update otomatis saat webhook Mayar masuk
+    useEffect(() => {
+        const unsubscribe = subscribeToTicketChanges();
+        return () => unsubscribe();
+    }, []);
 
     const totalEvents = events.length;
     const totalStaff = new Set(events.flatMap(e => e.assignedStaffIds)).size;
