@@ -42,6 +42,28 @@ function serviceClient() {
   )
 }
 
+// GET handler untuk test endpoint dari Mayar dashboard
+export async function GET(req: NextRequest) {
+  const token = req.nextUrl.searchParams.get('token')
+  
+  // Debug info (hanya untuk development)
+  const isTokenSet = !!process.env.MAYAR_WEBHOOK_TOKEN
+  const tokenMatch = process.env.MAYAR_WEBHOOK_TOKEN === token
+  
+  if (!process.env.MAYAR_WEBHOOK_TOKEN || token !== process.env.MAYAR_WEBHOOK_TOKEN) {
+    return NextResponse.json({ 
+      error: 'unauthorized',
+      debug: process.env.NODE_ENV === 'development' ? { isTokenSet, tokenMatch } : undefined
+    }, { status: 401 })
+  }
+
+  return NextResponse.json({ 
+    ok: true, 
+    message: 'Mayar webhook endpoint is ready',
+    timestamp: new Date().toISOString()
+  })
+}
+
 export async function POST(req: NextRequest) {
   // 1. Autentikasi sederhana via token di query string.
   //    (Webhook Mayar tidak menyertakan HMAC signature, jadi token rahasia
